@@ -155,8 +155,9 @@ void getLeastFrequent(
 
     for(int i = k; i < n; i++)
     {
-        if(words[i].frequency <
-           result[0].frequency)
+        if(words[i].frequency > 0 &&
+   words[i].frequency <
+   result[0].frequency)
         {
             result[0] = words[i];
 
