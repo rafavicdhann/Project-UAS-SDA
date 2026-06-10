@@ -64,6 +64,7 @@ int main()
     char docwordFile[256];
 
     int totalWords = 0;
+    int actualK = 0;
 
     WordFreq *words = NULL;
 
@@ -73,10 +74,13 @@ int main()
     double mostTime = 0;
     double leastTime = 0;
 
+    int mostReady = 0;
+    int leastReady = 0;
+
     int choice;
 
     printf("====================================\n");
-    printf(" BIG CHALLENGE SDA\n");
+    printf("      BIG CHALLENGE SDA\n");
     printf("====================================\n");
 
     printf("\nMasukkan file vocabulary : ");
@@ -98,6 +102,10 @@ int main()
         docwordFile,
         words,
         totalWords);
+
+    actualK = (totalWords < K)
+              ? totalWords
+              : K;
 
     do
     {
@@ -123,27 +131,31 @@ int main()
                 getMostFrequent(
                     words,
                     totalWords,
-                    K,
+                    actualK,
                     most);
 
                 heapSortDescending(
                     most,
-                    K);
+                    actualK);
 
                 clock_t end = clock();
 
                 mostTime =
                     ((double)(end - start))
-                    * 1000
+                    * 1000.0
                     / CLOCKS_PER_SEC;
 
                 saveResult(
                     "most_frequent.txt",
                     most,
-                    K,
+                    actualK,
                     mostTime);
 
+                mostReady = 1;
+
                 printf("\nData berhasil disimpan ke most_frequent.txt\n");
+                printf("Waktu proses : %.3f ms\n",
+                       mostTime);
 
                 break;
             }
@@ -155,36 +167,50 @@ int main()
                 getLeastFrequent(
                     words,
                     totalWords,
-                    K,
+                    actualK,
                     least);
 
                 heapSortDescending(
                     least,
-                    K);
+                    actualK);
 
                 clock_t end = clock();
 
                 leastTime =
                     ((double)(end - start))
-                    * 1000
+                    * 1000.0
                     / CLOCKS_PER_SEC;
 
                 saveResult(
                     "least_frequent.txt",
                     least,
-                    K,
+                    actualK,
                     leastTime);
 
+                leastReady = 1;
+
                 printf("\nData berhasil disimpan ke least_frequent.txt\n");
+                printf("Waktu proses : %.3f ms\n",
+                       leastTime);
 
                 break;
             }
 
             case 3:
             {
+                if(!mostReady)
+                {
+                    printf("\nJalankan menu 1 terlebih dahulu!\n");
+                    break;
+                }
+
+                printf("\n====================================\n");
+                printf("100 KATA PALING SERING\n");
+                printf("====================================\n");
+
                 displayResult(
                     most,
-                    K,
+                    actualK,
                     mostTime);
 
                 break;
@@ -192,9 +218,19 @@ int main()
 
             case 4:
             {
+                if(!leastReady)
+                {
+                    printf("\nJalankan menu 2 terlebih dahulu!\n");
+                    break;
+                }
+
+                printf("\n====================================\n");
+                printf("100 KATA PALING JARANG\n");
+                printf("====================================\n");
+
                 displayResult(
                     least,
-                    K,
+                    actualK,
                     leastTime);
 
                 break;
@@ -212,7 +248,8 @@ int main()
             }
         }
 
-    } while(choice != 5);
+    }
+    while(choice != 5);
 
     free(words);
 
